@@ -31,11 +31,23 @@ namespace UsearAPI
 
             services.AddDbContext<UserDetailContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));   // sql server is the db provider (pass db connection string)
+
+            // To allow communication between different ports of UI and API
+            services.AddCors();
+        
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            // Allow request from Angular app
+            app.UseCors(options => 
+            options
+            .WithOrigins("http://localhost:4200")  // URL of Angular App
+            .AllowAnyMethod().AllowAnyHeader());   // Allow all get, post, put,... methods
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
